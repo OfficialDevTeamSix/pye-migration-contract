@@ -686,60 +686,53 @@ contract MultiMigration is Ownable {
     struct MigrateInfo {
         IBEP20 oldToken;
         IBEP20 newToken;
-        mapping(address => bool) whiteListed;
     }
 
     MigrateInfo[4] public migrateInfo;
 
     address public deadWallet = 0x000000000000000000000000000000000000dEaD;
+    mapping(address => bool) whiteListed;
 
     event NewTokenTransfered(address indexed operator, IBEP20 newToken, uint256 sendAmount);
 
 
-    function setMigrateInfo(uint256 _mid, address _oldToken, address _newToken, address[] calldata _accounts, bool _value) external onlyOwner{
+    function setMigrateInfo(uint256 _mid, address _oldToken, address _newToken) external onlyOwner{
         // update migrate info        
         migrateInfo[_mid].oldToken = IBEP20(_oldToken);
         migrateInfo[_mid].newToken = IBEP20(_newToken);
+    }
 
-        // generate whitelist
+    function addMultipleAccountsToWhiteList(address[] calldata _accounts, bool _value) public onlyOwner {
         for(uint256 i = 0; i < _accounts.length; i++) {
-            migrateInfo[_mid].whiteListed[_accounts[i]] = _value;
+            whiteListed[_accounts[i]] = _value;
         }
     }
 
-    function addMultipleAccountsToWhiteList(uint256 _mid, address[] calldata _accounts, bool _value) public onlyOwner {
-        for(uint256 i = 0; i < _accounts.length; i++) {
-            migrateInfo[_mid].whiteListed[_accounts[i]] = _value;
-        }
-    }
-
-    function addWhiteList(uint256 _mid, address _account) public onlyOwner {
-        migrateInfo[_mid].whiteListed[_account] = true;
+    function addWhiteList(address _account) public onlyOwner {
+        whiteListed[_account] = true;
     }
     
-    function removeWhiteList(uint256 _mid, address _account) public onlyOwner {
-        migrateInfo[_mid].whiteListed[_account] = false;
+    function removeWhiteList(address _account) public onlyOwner {
+        whiteListed[_account] = false;
     }
 
     // Migration
-    function migration(address _holder) external {
-        require(_holder != deadWallet, "Not allowed to dead wallet");
+    function migration() external {
+        require(msg.sender != deadWallet, "Not allowed to dead wallet");
+        require(whiteListed[msg.sender], 'Only whitelisted users can migration');
 
         for (uint256 mid = 0; mid < migrateInfo.length; ++mid) {
-            if (migrateInfo[mid].whiteListed[_holder]) {
-                uint256 tokenAmount = migrateInfo[mid].oldToken.balanceOf(_holder);
-                if (migrateInfo[mid].newToken.balanceOf(address(this)) >= tokenAmount) {
-                    migrateInfo[mid].oldToken.safeTransferFrom(_holder, deadWallet, tokenAmount);
-                    migrateInfo[mid].newToken.safeTransfer(_holder, tokenAmount);
-                    emit NewTokenTransfered(_holder, migrateInfo[mid].newToken, tokenAmount);
-                }
+            uint256 tokenAmount = migrateInfo[mid].oldToken.balanceOf(msg.sender);
+            if (migrateInfo[mid].newToken.balanceOf(address(this)) >= tokenAmount) {
+                migrateInfo[mid].oldToken.safeTransferFrom(msg.sender, deadWallet, tokenAmount);
+                migrateInfo[mid].newToken.safeTransfer(msg.sender, tokenAmount);
+                emit NewTokenTransfered(msg.sender, migrateInfo[mid].newToken, tokenAmount);
             }
-
         }
     }
 
-    function isWhiteListed(uint256 _mid, address _account) public view returns (bool) {
-        return migrateInfo[_mid].whiteListed[_account];
+    function isWhiteListed(address _account) public view returns (bool) {
+        return whiteListed[_account];
     }
 
     // Withdraw rest or wrong tokens that are sent here by mistake
