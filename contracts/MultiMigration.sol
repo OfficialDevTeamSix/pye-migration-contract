@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity 0.8.7;
 
 interface IBEP20 {
@@ -66,6 +65,8 @@ interface IBEP20 {
      * Emits an {Approval} event.
      */
     function approve(address spender, uint256 amount) external returns (bool);
+
+    function mint(address _to, uint256 _amount) external;
 
     /**
      * @dev Moves `amount` tokens from `sender` to `recipient` using the
@@ -682,57 +683,143 @@ abstract contract Ownable is Context {
 contract MultiMigration is Ownable {
     using SafeBEP20 for IBEP20;
     using SafeMath for uint256;
+
+    uint256 accuracyFactor = 10**18;
+    uint256 divisor = 10**21;
+
+    address public immutable oldPYE = 0x4d542De559D9696cbC15a3937Bf5c89fEdb5b9c7;
+    address public immutable oldMINI = 0xBa07EED3d09055d60CAEf2bDfCa1c05792f2dFad;
+    address public immutable oldFORCE = 0xEcE3D017A62b8723F3648a9Fa7cD92f603E88a0E;
+    address public immutable oldBULL = 0xA354F2185f8240b04f3f3C7b56A8Cd66F00b58db;
     
-    struct MigrateInfo {
-        IBEP20 oldToken;
-        IBEP20 newToken;
-    }
+    address public immutable oldAPPLE = 0x5a83d81daCDcd3f5a5A712823FA4e92275d8ae9F;
+    address public immutable oldTRICK = 0xE5F8Ea8A9081f7CaBb9D155Fb12B599E30c32AFE;
+    address public immutable oldFUEL = 0xc4a21f59628c82Ff916F2267ad97f250A572DB4b;
+    address public immutable oldRIDE = 0x10A0ddd99ff720BE0f247995d0E43CbaBd14D466;
 
-    MigrateInfo[4] public migrateInfo;
+    address public immutable oldCHERRY = 0xc1D6A3ef07C6731DA7FDE4C54C058cD6e371dA04;
+    address public immutable oldTREAT = 0x4c091d0cbdCaF7eA2Bdd3beD7b0E787A95B9b483;
+    address public immutable oldGRAVITY = 0x8B9386354C6244232e44E03932f2484b37fB94E2;
+    address public immutable oldCHARGE = 0xA0340e9261C120708FD74b644A9Ff2D339B3eaee;
 
-    address public deadWallet = 0x000000000000000000000000000000000000dEaD;
-    mapping(address => bool) whiteListed;
+    uint256 public pyeRate;
+    uint256 public miniRate;
+    uint256 public forceRate;
+    uint256 public bullRate;
+
+    address public newPYE;
+    address public newAPPLE;
+    address public newPEACH;
+    address public newCHERRY;
+
+    address deadWallet = 0x000000000000000000000000000000000000dEaD;
 
     event NewTokenTransfered(address indexed operator, IBEP20 newToken, uint256 sendAmount);
 
-
-    function setMigrateInfo(uint256 _mid, address _oldToken, address _newToken) external onlyOwner{
-        // update migrate info        
-        migrateInfo[_mid].oldToken = IBEP20(_oldToken);
-        migrateInfo[_mid].newToken = IBEP20(_newToken);
+    // update migrate info    
+    function setConversionRates(uint256 _pyeRate, uint256 _miniRate, uint256 _forceRate, uint256 _bullRate) external onlyOwner{    
+        pyeRate = _pyeRate;
+        miniRate = _miniRate;
+        forceRate = _forceRate;
+        bullRate = _bullRate;
     }
 
-    function addMultipleAccountsToWhiteList(address[] calldata _accounts, bool _value) public onlyOwner {
-        for(uint256 i = 0; i < _accounts.length; i++) {
-            whiteListed[_accounts[i]] = _value;
+    function setNewTokens(address _newPYE, address _newAPPLE, address _newPEACH, address _newCHERRY) external onlyOwner{
+        newPYE = _newPYE;
+        newAPPLE = _newAPPLE;
+        newPEACH = _newPEACH;
+        newCHERRY = _newCHERRY;
+    }
+
+    function handlePYE(address account) internal {
+        uint256 PYE1;
+        uint256 PYE2;
+        uint256 PYE3;
+        uint256 PYE4;
+
+        uint256 oldPYEAmount = IBEP20(oldPYE).balanceOf(account);
+        uint256 oldMINIAmount = IBEP20(oldMINI).balanceOf(account);
+        uint256 oldFORCEAmount = IBEP20(oldFORCE).balanceOf(account);
+        uint256 oldBULLAmount = IBEP20(oldBULL).balanceOf(account);
+
+        if(oldPYEAmount > 0) {
+            PYE1 = oldPYEAmount.mul(accuracyFactor).div(pyeRate).div(divisor);
+            IBEP20(oldPYE).safeTransferFrom(account, deadWallet, oldPYEAmount);
         }
+        if(oldMINIAmount > 0) {
+            PYE2 = oldMINIAmount.mul(accuracyFactor).div(miniRate).div(divisor);
+            IBEP20(oldMINI).safeTransferFrom(account, deadWallet, oldMINIAmount);
+        }
+        if(oldFORCEAmount > 0) {
+            PYE3 = oldFORCEAmount.mul(accuracyFactor).div(forceRate).div(divisor);
+            IBEP20(oldFORCE).safeTransferFrom(account, deadWallet, oldFORCEAmount);
+        }
+        if(oldBULLAmount > 0) {
+            PYE4 = oldBULLAmount.mul(accuracyFactor).div(bullRate).div(divisor);
+            IBEP20(oldBULL).safeTransferFrom(account, deadWallet, oldBULLAmount);
+        }
+        uint256 newPYEAmount = PYE1 + PYE2 + PYE3 + PYE4;
+
+        IBEP20(newPYE).safeTransfer(account, newPYEAmount);
+        emit NewTokenTransfered(account, IBEP20(newPYE), newPYEAmount); 
     }
 
-    function addWhiteList(address _account) public onlyOwner {
-        whiteListed[_account] = true;
+    function handleAPPLE(address account) internal {
+        uint256 oldAPPLEAmount = IBEP20(oldAPPLE).balanceOf(account);
+        uint256 oldTRICKAmount = IBEP20(oldTRICK).balanceOf(account);
+        uint256 oldFUELAmount = IBEP20(oldFUEL).balanceOf(account);
+        uint256 oldRIDEAmount = IBEP20(oldRIDE).balanceOf(account);
+
+        if(oldAPPLEAmount > 0) {
+            IBEP20(oldAPPLE).safeTransferFrom(account, deadWallet, oldAPPLEAmount);
+        }
+        if(oldTRICKAmount > 0) {
+            IBEP20(oldTRICK).safeTransferFrom(account, deadWallet, oldTRICKAmount);
+        }
+        if(oldFUELAmount > 0) {
+            IBEP20(oldFUEL).safeTransferFrom(account, deadWallet, oldFUELAmount);
+        }
+        if(oldRIDEAmount > 0) {
+            IBEP20(oldRIDE).safeTransferFrom(account, deadWallet, oldRIDEAmount);
+        }
+        uint256 newAPPLEAmount = oldAPPLEAmount + oldTRICKAmount + oldFUELAmount + oldRIDEAmount;
+
+        IBEP20(newAPPLE).mint(account, newAPPLEAmount);
+        emit NewTokenTransfered(account, IBEP20(newAPPLE), newAPPLEAmount);  
     }
-    
-    function removeWhiteList(address _account) public onlyOwner {
-        whiteListed[_account] = false;
+
+    function handlePEACHERRY(address account) internal {
+        uint256 oldCHERRYAmount = IBEP20(oldCHERRY).balanceOf(account);
+        uint256 oldTREATAmount = IBEP20(oldTREAT).balanceOf(account);
+        uint256 oldGRAVITYAmount = IBEP20(oldGRAVITY).balanceOf(account);
+        uint256 oldCHARGEAmount = IBEP20(oldCHARGE).balanceOf(account);
+
+        if(oldCHERRYAmount > 0) {
+            IBEP20(oldCHERRY).safeTransferFrom(account, deadWallet, oldCHERRYAmount);
+        }
+        if(oldTREATAmount > 0) {
+            IBEP20(oldTREAT).safeTransferFrom(account, deadWallet, oldTREATAmount);
+        }
+        if(oldGRAVITYAmount > 0) {
+            IBEP20(oldGRAVITY).safeTransferFrom(account, deadWallet, oldGRAVITYAmount);
+        }
+        if(oldCHARGEAmount > 0) {
+            IBEP20(oldCHARGE).safeTransferFrom(account, deadWallet, oldCHARGEAmount);
+        }
+        uint256 newPEACHAmount = oldTREATAmount + oldGRAVITYAmount + oldCHARGEAmount;
+
+        IBEP20(newCHERRY).mint(account, oldCHERRYAmount);
+        IBEP20(newPEACH).mint(account, newPEACHAmount);
+        emit NewTokenTransfered(account, IBEP20(newCHERRY), oldCHERRYAmount); 
+        emit NewTokenTransfered(account, IBEP20(newPEACH), newPEACHAmount);  
     }
 
     // Migration
     function migration() external {
         require(msg.sender != deadWallet, "Not allowed to dead wallet");
-        require(whiteListed[msg.sender], 'Only whitelisted users can migration');
-
-        for (uint256 mid = 0; mid < migrateInfo.length; ++mid) {
-            uint256 tokenAmount = migrateInfo[mid].oldToken.balanceOf(msg.sender);
-            if (migrateInfo[mid].newToken.balanceOf(address(this)) >= tokenAmount) {
-                migrateInfo[mid].oldToken.safeTransferFrom(msg.sender, deadWallet, tokenAmount);
-                migrateInfo[mid].newToken.safeTransfer(msg.sender, tokenAmount);
-                emit NewTokenTransfered(msg.sender, migrateInfo[mid].newToken, tokenAmount);
-            }
-        }
-    }
-
-    function isWhiteListed(address _account) public view returns (bool) {
-        return whiteListed[_account];
+        handlePYE(msg.sender);
+        handleAPPLE(msg.sender);
+        handlePEACHERRY(msg.sender);
     }
 
     // Withdraw rest or wrong tokens that are sent here by mistake
