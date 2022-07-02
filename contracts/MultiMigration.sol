@@ -685,7 +685,7 @@ contract MultiMigration is Ownable {
     using SafeMath for uint256;
 
     uint256 accuracyFactor = 10**18;
-    uint256 divisor = 10**21;
+    uint256 divisor = 10**27;
 
     address public immutable oldPYE = 0x4d542De559D9696cbC15a3937Bf5c89fEdb5b9c7;
     address public immutable oldMINI = 0xBa07EED3d09055d60CAEf2bDfCa1c05792f2dFad;
