@@ -685,7 +685,7 @@ contract MultiMigration is Ownable {
     using SafeMath for uint256;
 
     uint256 accuracyFactor = 10**18;
-    uint256 divisor = 10**27;
+    uint256 divisor = 10**18;
 
     address public immutable oldPYE = 0x4d542De559D9696cbC15a3937Bf5c89fEdb5b9c7;
     address public immutable oldMINI = 0xBa07EED3d09055d60CAEf2bDfCa1c05792f2dFad;
@@ -760,8 +760,10 @@ contract MultiMigration is Ownable {
         }
         uint256 newPYEAmount = PYE1 + PYE2 + PYE3 + PYE4;
 
-        IBEP20(newPYE).safeTransfer(account, newPYEAmount);
-        emit NewTokenTransfered(account, IBEP20(newPYE), newPYEAmount); 
+        if(newPYEAmount > 0) {
+            IBEP20(newPYE).safeTransfer(account, newPYEAmount);
+            emit NewTokenTransfered(account, IBEP20(newPYE), newPYEAmount); 
+        }
     }
 
     function handleAPPLE(address account) internal {
@@ -784,8 +786,10 @@ contract MultiMigration is Ownable {
         }
         uint256 newAPPLEAmount = oldAPPLEAmount + oldTRICKAmount + oldFUELAmount + oldRIDEAmount;
 
-        IBEP20(newAPPLE).mint(account, newAPPLEAmount);
-        emit NewTokenTransfered(account, IBEP20(newAPPLE), newAPPLEAmount);  
+        if(newAPPLEAmount > 0) {
+            IBEP20(newAPPLE).mint(account, newAPPLEAmount);
+            emit NewTokenTransfered(account, IBEP20(newAPPLE), newAPPLEAmount);  
+        }
     }
 
     function handlePEACHERRY(address account) internal {
@@ -796,6 +800,8 @@ contract MultiMigration is Ownable {
 
         if(oldCHERRYAmount > 0) {
             IBEP20(oldCHERRY).safeTransferFrom(account, deadWallet, oldCHERRYAmount);
+            IBEP20(newCHERRY).mint(account, oldCHERRYAmount);
+            emit NewTokenTransfered(account, IBEP20(newCHERRY), oldCHERRYAmount); 
         }
         if(oldTREATAmount > 0) {
             IBEP20(oldTREAT).safeTransferFrom(account, deadWallet, oldTREATAmount);
@@ -808,10 +814,10 @@ contract MultiMigration is Ownable {
         }
         uint256 newPEACHAmount = oldTREATAmount + oldGRAVITYAmount + oldCHARGEAmount;
 
-        IBEP20(newCHERRY).mint(account, oldCHERRYAmount);
-        IBEP20(newPEACH).mint(account, newPEACHAmount);
-        emit NewTokenTransfered(account, IBEP20(newCHERRY), oldCHERRYAmount); 
-        emit NewTokenTransfered(account, IBEP20(newPEACH), newPEACHAmount);  
+        if(newPEACHAmount > 0) {
+            IBEP20(newPEACH).mint(account, newPEACHAmount);
+            emit NewTokenTransfered(account, IBEP20(newPEACH), newPEACHAmount);  
+        }
     }
 
     // Migration
