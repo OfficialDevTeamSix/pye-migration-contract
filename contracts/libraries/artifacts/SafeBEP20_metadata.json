@@ -1,0 +1,71 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Wrappers around BEP20 operations that throw on failure (when the token contract returns false). Tokens that return no value (and instead revert or throw on failure) are also supported, non-reverting calls are assumed to be successful. To use this library you can add a `using SafeBEP20 for IBEP20;` statement to your contract, which allows you to call the safe operations as `token.safeTransfer(...)`, etc.",
+			"kind": "dev",
+			"methods": {},
+			"title": "SafeBEP20",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/libraries/SafeBEP20.sol": "SafeBEP20"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/utils/Address.sol": {
+			"keccak256": "0xd6153ce99bcdcce22b124f755e72553295be6abcd63804cfdffceb188b8bef10",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://35c47bece3c03caaa07fab37dd2bb3413bfbca20db7bd9895024390e0a469487",
+				"dweb:/ipfs/QmPGWT2x3QHcKxqe6gRmAkdakhbaRgx3DLzcakHz5M4eXG"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SafeMath.sol": {
+			"keccak256": "0x0f633a0223d9a1dcccfcf38a64c9de0874dfcbfac0c6941ccf074d63a2ce0e1e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://864a40efcffdf408044c332a5aa38ec5618ed7b4eecb8f65faf45671bd6cdc65",
+				"dweb:/ipfs/QmQJquTMtc6fgm5JQzGdsGpA2fqBe3MHWEdt2qzaLySMdN"
+			]
+		},
+		"contracts/interfaces/IBEP20.sol": {
+			"keccak256": "0x55aeb2614cd28209627ce7bf2ddf1f62c5c447665f2d92aee3209afcc110cbae",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2881825766a2e61fcec3904dedd928f6c946c9185713385e2566d2bd5bf63566",
+				"dweb:/ipfs/QmWAvzMxfQDSshmHLts6858rWMS1sDjVYfRHFgMZHiuHaL"
+			]
+		},
+		"contracts/libraries/SafeBEP20.sol": {
+			"keccak256": "0x768e81665285b1f3309fa4935085f0fc3de70d213051a3e03444d61679e5680b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5cbf2047ac23be4d2889621a340b1365ec5ab5f0de058813efaef34da0e9483a",
+				"dweb:/ipfs/QmPkSqw9rp6tK95Dop9MLUfQXUnkXHAb6GhpdUjguaLXNS"
+			]
+		}
+	},
+	"version": 1
+}
