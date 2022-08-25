@@ -1,0 +1,71 @@
+{
+	"compiler": {
+		"version": "0.8.16+commit.07a7930e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Wrappers around ERC20 operations that throw on failure (when the token contract returns false). Tokens that return no value (and instead revert or throw on failure) are also supported, non-reverting calls are assumed to be successful. To use this library you can add a `using SafeERC20 for IERC20;` statement to your contract, which allows you to call the safe operations as `token.safeTransfer(...)`, etc.",
+			"kind": "dev",
+			"methods": {},
+			"title": "SafeERC20",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/libraries/SafeERC20.sol": "SafeERC20"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 999999
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/utils/Address.sol": {
+			"keccak256": "0xd6153ce99bcdcce22b124f755e72553295be6abcd63804cfdffceb188b8bef10",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://35c47bece3c03caaa07fab37dd2bb3413bfbca20db7bd9895024390e0a469487",
+				"dweb:/ipfs/QmPGWT2x3QHcKxqe6gRmAkdakhbaRgx3DLzcakHz5M4eXG"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SafeMath.sol": {
+			"keccak256": "0x0f633a0223d9a1dcccfcf38a64c9de0874dfcbfac0c6941ccf074d63a2ce0e1e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://864a40efcffdf408044c332a5aa38ec5618ed7b4eecb8f65faf45671bd6cdc65",
+				"dweb:/ipfs/QmQJquTMtc6fgm5JQzGdsGpA2fqBe3MHWEdt2qzaLySMdN"
+			]
+		},
+		"contracts/interfaces/IERC20.sol": {
+			"keccak256": "0x3344bf4768c3747bc3ffd2cb9d1efe859ae1e56815476d35733a8c80fc39f766",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7c64d8c540c6700b37af0f02d086a079612e8d50a959619ba13d5f713ab465fd",
+				"dweb:/ipfs/QmcWeCLLcAwQ97EHiGF2rQKt6SbXP1GZ5GCc7FkHKx78YB"
+			]
+		},
+		"contracts/libraries/SafeERC20.sol": {
+			"keccak256": "0x33de2d2ebc085a05bf63417a6a5d133270fb5b607f0a3b784afb436f54ca8b10",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0256eb44e616fcdb61e24b1dbab6b26aa053391a5b728ccf0c08beef1bebbf5d",
+				"dweb:/ipfs/QmPvS8aWQhXj3Dg7qsu7ZF42S8ySgweUdWKuGFG2XQofj7"
+			]
+		}
+	},
+	"version": 1
+}
