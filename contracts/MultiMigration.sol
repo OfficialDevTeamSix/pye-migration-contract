@@ -12,17 +12,17 @@ contract MultiMigration is Ownable, ReentrancyGuard {
     uint256 accuracyFactor = 10**18;
     uint256 divisor = 10**18;
 
-    address public immutable oldPYE = 0x4d542De559D9696cbC15a3937Bf5c89fEdb5b9c7;
-    address public immutable oldFORCE = 0xEcE3D017A62b8723F3648a9Fa7cD92f603E88a0E;
-    address public immutable oldAPPLE = 0x5a83d81daCDcd3f5a5A712823FA4e92275d8ae9F;
-    address public immutable oldCHERRY = 0xc1D6A3ef07C6731DA7FDE4C54C058cD6e371dA04;
+    address public constant oldPYE = 0x5B232991854c790b29d3F7a145a7EFD660c9896c;
+    address public constant oldFORCE = 0x82ce8A98Bf1c5daBe24620220dd4bc5da0ba291d;
+    address public constant oldAPPLE = 0x6f43a672D8024ba624651a5c2e63D129783dAd1F;
+    address public constant oldCHERRY = 0xD2858A1f93316242E81CF69B762361F59Fb9b18E;
 
     uint256 public pyeRate = 125;
     uint256 public forceRate = 200;
 
-    address public newPYE;
-    address public newAPPLE;
-    address public newCHERRY;
+    address public newPYE = 0x59f4cdBF88cBd8e3D34B00828d0b43d406F79B4e;
+    address public newAPPLE = 0x717f8316e497456662ebAeE099Ac6bdAA1E62482;
+    address public newCHERRY = 0x621d1C61843c43cA8D84E6480338df1DB3e068A7;
 
     address deadWallet = 0x000000000000000000000000000000000000dEaD;
 
